@@ -16,7 +16,7 @@ The account owner must scan QR codes, approve OAuth scopes, and approve restrict
 ## Procedure
 
 1. If only the GitHub URL was supplied, inspect or clone the public repository into a temporary working directory so these instructions and bundled scripts are available. Do not place it inside an unrelated user repository.
-2. Confirm that `codex` is installed and signed in and that Node.js is at least 20.12. Do not replace an existing Node installation without approval.
+2. Confirm that `codex` is installed and signed in and that Node.js is at least 20.12. If Node.js is missing or too old, identify the user's existing version manager or operating-system package manager, explain the proposed change, obtain approval, install a supported Node.js version, and rerun the check. Do not silently replace an existing Node installation or version manager.
 3. Add this marketplace and install the plugin if they are not already installed:
 
    ```bash

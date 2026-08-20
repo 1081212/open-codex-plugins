@@ -16,7 +16,7 @@ Resolve `<setup-dir>` to this Skill directory and `<docs-dir>` to the sibling `.
 
 ## Install
 
-1. Run the platform-appropriate dependency installer from `<setup-dir>/scripts` when the user has asked to install or repair the integration. It checks Node.js and Codex before changing global npm packages. Do not add `sudo`, replace Node.js, or alter shell startup files automatically.
+1. Run the platform-appropriate dependency installer from `<setup-dir>/scripts` when the user has asked to install or repair the integration. It checks Node.js and Codex before changing global npm packages. If Node.js is missing or too old, prefer the user's existing version manager; otherwise identify an appropriate operating-system install method, explain it, obtain approval, install Node.js 20.12 or newer, and rerun the installer. Do not add `sudo`, replace a version manager, or alter shell startup files automatically.
 2. Run the platform-appropriate doctor script from `<docs-dir>/scripts`.
 3. If the profile is absent or its service is not installed, run:
 
