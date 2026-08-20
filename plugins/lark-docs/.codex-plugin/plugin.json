@@ -1,0 +1,27 @@
+{
+  "name": "lark-docs",
+  "version": "0.1.0",
+  "description": "Connect Codex to Lark and Feishu documents through the user's local authorization.",
+  "author": {
+    "name": "Open Codex Plugins contributors"
+  },
+  "homepage": "https://github.com/1081212/open-codex-plugins/tree/main/plugins/lark-docs",
+  "repository": "https://github.com/1081212/open-codex-plugins",
+  "license": "MIT",
+  "keywords": ["codex", "lark", "feishu", "documents"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Lark Docs",
+    "shortDescription": "Work with your Lark or Feishu documents from Codex.",
+    "longDescription": "Read, search, create, and edit Lark or Feishu documents through a local profile authorized by the current user.",
+    "developerName": "Open Codex Plugins contributors",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/1081212/open-codex-plugins/tree/main/plugins/lark-docs",
+    "defaultPrompt": [
+      "Summarize this Lark document.",
+      "Create a Lark document from these notes.",
+      "Update this Feishu document with my changes."
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+profile_name="${LARK_CHANNEL_PROFILE:-codex}"
+bridge_root="${LARK_CHANNEL_HOME:-${HOME}/.lark-channel}"
+source_config="${bridge_root}/profiles/${profile_name}/lark-cli-source/config.json"
+cli_config_dir="${bridge_root}/profiles/${profile_name}/lark-cli"
+
+if [[ ! -f "${source_config}" ]]; then
+  printf 'Lark profile is not configured: %s\n' "${profile_name}" >&2
+  printf 'Initialize it with: lark-channel-bridge run --profile %s --agent codex\n' "${profile_name}" >&2
+  exit 2
+fi
+
+if ! lark_cli_bin="$(command -v lark-cli)"; then
+  printf 'lark-cli is not installed or not on PATH.\n' >&2
+  printf 'Package: @larksuite/cli\n' >&2
+  exit 2
+fi
+
+export LARK_CHANNEL=1
+export LARK_CHANNEL_HOME="${bridge_root}"
+export LARK_CHANNEL_PROFILE="${profile_name}"
+export LARK_CHANNEL_CONFIG="${source_config}"
+export LARKSUITE_CLI_CONFIG_DIR="${cli_config_dir}"
+export LARKSUITE_CLI_NO_UPDATE_NOTIFIER=1
+export LARKSUITE_CLI_NO_SKILLS_NOTIFIER=1
+
+exec "${lark_cli_bin}" "$@"

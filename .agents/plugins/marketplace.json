@@ -1,0 +1,20 @@
+{
+  "name": "open-codex-plugins",
+  "interface": {
+    "displayName": "Open Codex Plugins"
+  },
+  "plugins": [
+    {
+      "name": "lark-docs",
+      "source": {
+        "source": "local",
+        "path": "./plugins/lark-docs"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
