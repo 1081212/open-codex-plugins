@@ -15,6 +15,18 @@
         "authentication": "ON_USE"
       },
       "category": "Productivity"
+    },
+    {
+      "name": "codex-usage-dashboard",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex-usage-dashboard"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
     }
   ]
 }

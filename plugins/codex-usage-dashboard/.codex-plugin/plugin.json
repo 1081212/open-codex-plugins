@@ -1,0 +1,27 @@
+{
+  "name": "codex-usage-dashboard",
+  "version": "0.1.0",
+  "description": "Install and operate a private, local-only dashboard for Codex token usage.",
+  "author": {
+    "name": "Open Codex Plugins contributors"
+  },
+  "homepage": "https://github.com/1081212/open-codex-plugins/tree/main/plugins/codex-usage-dashboard",
+  "repository": "https://github.com/1081212/open-codex-plugins",
+  "license": "MIT",
+  "keywords": ["codex", "usage", "tokens", "dashboard", "local"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Usage Dashboard",
+    "shortDescription": "See local Codex token usage and quota trends.",
+    "longDescription": "Install, update, and operate a localhost-only dashboard that aggregates structured token counters from the current user's Codex session logs without reading conversation content.",
+    "developerName": "Open Codex Plugins contributors",
+    "category": "Productivity",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/1081212/open-codex-plugins/tree/main/plugins/codex-usage-dashboard",
+    "defaultPrompt": [
+      "Install my Codex usage dashboard and enable daily automatic updates.",
+      "Open my Codex usage dashboard.",
+      "Check whether my Codex usage dashboard is healthy and up to date."
+    ]
+  }
+}

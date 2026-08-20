@@ -20,6 +20,13 @@ the setup and verification, pausing only when I must scan a QR code, approve
 OAuth, or grant a system permission.
 ```
 
+Or install the local usage dashboard with opt-in automatic updates:
+
+```text
+Install the Codex Usage Dashboard from this repository and enable daily
+automatic updates. Complete setup and verify the local health endpoint.
+```
+
 Codex should follow [INSTALL.md](INSTALL.md). The QR code and OAuth consent must be completed by the account owner; they cannot safely be automated or shared.
 
 ## Manual marketplace installation
@@ -32,6 +39,7 @@ Then open Codex and enter `/plugins`, or install a plugin directly:
 
 ```bash
 codex plugin add lark-docs@open-codex-plugins
+codex plugin add codex-usage-dashboard@open-codex-plugins
 ```
 
 ## Plugins
@@ -46,6 +54,15 @@ local Codex -> @larksuite/cli -> Lark or Feishu documents
 ```
 
 The plugin contains no credentials. Each user completes their own QR-code and OAuth authorization. See [the plugin documentation](plugins/lark-docs/README.md).
+
+### Codex Usage Dashboard
+
+Provides a localhost-only token usage dashboard using structured metadata from
+the current user's Codex session logs. It does not collect, store, or expose
+conversation content.
+The plugin includes per-user service installers for macOS, Linux, and Windows,
+plus optional daily Marketplace-based automatic updates with health-check
+rollback. See [the plugin documentation](plugins/codex-usage-dashboard/README.md).
 
 ## Repository layout
 

@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex Token 用量</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7f9; --panel: rgba(255,255,255,.82); --panel-solid: #ffffff;
+      --panel-subtle: #fafafd; --text: #15151a; --muted: #6f7180;
+      --border: rgba(25,25,35,.095); --grid-line: rgba(32,32,45,.042);
+      --primary: #635bff; --primary-strong: #4f46e5; --primary-soft: #eeecff;
+      --cached: #756cf3; --uncached: #f59e0b; --output: #16a474; --unknown: #a5a8b2;
+      --heat-0: #ececf1; --heat-1: #dedbff; --heat-2: #b4aefa;
+      --heat-3: #8178ed; --heat-4: #554ce0;
+      --shadow: 0 1px 2px rgba(18,18,28,.025), 0 10px 35px rgba(18,18,28,.045);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0c0c0f; --panel: rgba(22,22,27,.82); --panel-solid: #16161b;
+        --panel-subtle: #121217; --text: #f0f0f2; --muted: #92929f;
+        --border: rgba(255,255,255,.09); --grid-line: rgba(255,255,255,.035);
+        --primary: #8b83ff; --primary-strong: #9c95ff; --primary-soft: #24213f;
+        --heat-0: #26262e; --heat-1: #39355e;
+        --heat-2: #504a91; --heat-3: #6960c8; --heat-4: #8178e8;
+        --shadow: 0 1px 2px rgba(0,0,0,.18), 0 16px 45px rgba(0,0,0,.18); }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; min-height: 100vh; background-color: var(--bg); background-image: radial-gradient(circle at 15% -10%, rgba(99,91,255,.11), transparent 29%), radial-gradient(circle at 92% 4%, rgba(22,164,116,.065), transparent 24%), linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: auto, auto, 48px 48px, 48px 48px; color: var(--text); font: 14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing: -.01em; }
+    main { position: relative; max-width: 1360px; margin: 0 auto; padding: 24px 28px 64px; }
+    header { position: sticky; top: 14px; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 22px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 18px; background: color-mix(in srgb, var(--panel-solid) 78%, transparent); box-shadow: 0 8px 32px rgba(20,20,35,.06); backdrop-filter: blur(18px) saturate(1.25); }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark { position: relative; width: 36px; height: 36px; flex: 0 0 auto; overflow: hidden; border-radius: 11px; background: linear-gradient(145deg, #7b72ff, #4b43d4); box-shadow: inset 0 1px rgba(255,255,255,.32), 0 8px 18px rgba(99,91,255,.2); }
+    .brand-mark::before, .brand-mark::after { content: ""; position: absolute; border: 1px solid rgba(255,255,255,.62); transform: rotate(45deg); }
+    .brand-mark::before { width: 17px; height: 17px; left: 9px; top: 9px; border-radius: 5px; }
+    .brand-mark::after { width: 7px; height: 7px; left: 14px; top: 14px; border-radius: 2px; background: rgba(255,255,255,.18); }
+    .eyebrow { color: var(--primary); font-size: 10px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: 21px; line-height: 1.25; letter-spacing: -.045em; }
+    h2 { display: flex; align-items: center; gap: 9px; margin: 0 0 16px; font-size: 16px; letter-spacing: -.025em; }
+    h2::before { content: ""; width: 4px; height: 15px; border-radius: 4px; background: linear-gradient(var(--primary), var(--primary-strong)); box-shadow: 0 0 14px rgba(99,91,255,.28); }
+    .subtitle, .meta, .hint { color: var(--muted); }
+    .subtitle { margin-top: 2px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    button, select { border: 1px solid var(--border); background: var(--panel-solid); color: var(--text); border-radius: 10px; padding: 9px 12px; font: inherit; transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+    button { cursor: pointer; background: linear-gradient(180deg, #726aff, var(--primary-strong)); color: white; border-color: transparent; font-weight: 650; box-shadow: inset 0 1px rgba(255,255,255,.22), 0 5px 13px rgba(79,70,229,.2); }
+    button:hover { transform: translateY(-1px); box-shadow: inset 0 1px rgba(255,255,255,.25), 0 8px 18px rgba(79,70,229,.25); }
+    select:hover { border-color: color-mix(in srgb, var(--primary) 42%, var(--border)); }
+    button:disabled { opacity: .6; cursor: wait; }
+    .status { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #22a06b; box-shadow: 0 0 0 3px rgba(34,160,107,.13); }
+    .dot.error { background: #d92d20; box-shadow: 0 0 0 3px rgba(217,45,32,.13); }
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .card, .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); backdrop-filter: blur(14px); }
+    .card { position: relative; min-height: 142px; padding: 19px; overflow: hidden; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+    .card::after { content: ""; position: absolute; width: 130px; height: 130px; right: -72px; top: -72px; border-radius: 50%; background: var(--card-glow, rgba(99,91,255,.11)); filter: blur(2px); }
+    .card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--primary) 25%, var(--border)); box-shadow: 0 14px 36px rgba(24,24,40,.075); }
+    .card:nth-child(2) { --card-glow: rgba(245,158,11,.12); }
+    .card:nth-child(3) { --card-glow: rgba(117,108,243,.14); }
+    .card:nth-child(4) { --card-glow: rgba(22,164,116,.12); }
+    .label { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+    .card:nth-child(2) .label::before { background: var(--uncached); box-shadow: 0 0 0 4px rgba(245,158,11,.11); }
+    .card:nth-child(3) .label::before { background: var(--cached); }
+    .card:nth-child(4) .label::before { background: var(--output); box-shadow: 0 0 0 4px rgba(22,164,116,.1); }
+    .value { position: relative; z-index: 1; margin-top: 10px; font-size: clamp(22px, 2vw, 27px); font-weight: 720; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+    .small { margin-top: 5px; color: var(--muted); font-size: 12px; }
+    .value-short { color: var(--primary); font-weight: 650; font-size: 13px; }
+    .metric-price { position: relative; z-index: 1; display: inline-flex; align-items: center; width: fit-content; margin-top: 7px; padding: 3px 8px; border: 1px solid color-mix(in srgb, var(--primary) 19%, var(--border)); border-radius: 999px; background: color-mix(in srgb, var(--primary-soft) 72%, transparent); color: var(--primary-strong); font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .section-head { display: flex; align-items: start; justify-content: space-between; gap: 18px; margin-bottom: 14px; }
+    .section-head h2 { margin-bottom: 0; }
+    .section-note { color: var(--muted); font-size: 11px; text-align: right; }
+    .utility-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(330px, .8fr); gap: 12px; }
+    .utility-grid > .panel { min-width: 0; }
+    .utility-grid > .panel:first-child { display: flex; flex-direction: column; }
+    .utility-grid > .panel:first-child .quota-row { flex: 1; }
+    .quota-row { display: grid; grid-template-columns: minmax(180px, .6fr) minmax(280px, 2fr) auto; gap: 18px; align-items: center; }
+    .quota-value { font-size: 26px; font-weight: 720; letter-spacing: -.04em; }
+    .quota-track { height: 12px; overflow: hidden; border-radius: 999px; background: var(--heat-0); }
+    .quota-fill { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--primary), #8d85ff); transition: width .3s ease; }
+    .quota-detail { color: var(--muted); font-size: 12px; text-align: right; }
+    .cost-summary { display: grid; gap: 10px; }
+    .cost-total { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; min-width: 0; padding: 14px 15px; border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border)); border-radius: 14px; background: linear-gradient(145deg, var(--panel-solid), var(--primary-soft)); }
+    .cost-total-copy { min-width: 0; }
+    .cost-total strong { color: var(--primary-strong); font-size: clamp(21px, 2vw, 26px); line-height: 1; letter-spacing: -.045em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .cost-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .cost-fact { min-width: 0; padding: 9px 10px; border: 1px solid var(--border); border-radius: 11px; background: var(--panel-subtle); color: var(--muted); font-size: 10px; }
+    .cost-fact strong { display: block; margin-top: 3px; overflow: hidden; color: var(--text); font-size: 11px; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
+    .pricing-details { padding: 0; overflow: hidden; }
+    .pricing-details summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 15px 21px; cursor: pointer; color: var(--text); font-weight: 680; list-style: none; }
+    .pricing-details summary::-webkit-details-marker { display: none; }
+    .pricing-details summary::after { content: "展开"; flex: 0 0 auto; padding: 3px 8px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-size: 10px; }
+    .pricing-details[open] summary::after { content: "收起"; }
+    .pricing-summary-copy { color: var(--muted); font-size: 11px; font-weight: 500; }
+    .pricing-body { padding: 0 21px 18px; border-top: 1px solid var(--border); }
+    .pricing-body #unpricedNotice { margin: 14px 0 10px; padding: 10px 12px; border-radius: 10px; background: var(--panel-subtle); }
+    .pricing-body .table-wrap { border: 1px solid var(--border); border-radius: 12px; }
+    .pricing-body #pricingNotes { margin: 10px 2px 0; }
+    .panel { padding: 21px; margin-top: 12px; }
+    .panel > .hint { margin: -10px 0 14px 13px; font-size: 12px; }
+    .chart-wrap { overflow-x: auto; min-height: 300px; }
+    #chart { width: 100%; min-width: 720px; height: 300px; display: block; }
+    .period-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .period-grid > .panel { min-width: 0; }
+    .period-chart-wrap { overflow-x: auto; min-height: 240px; }
+    .period-chart { width: 100%; min-width: 520px; height: 240px; display: block; }
+    .period-table-wrap { overflow-x: auto; max-height: 390px; margin-top: 10px; }
+    .period-table-wrap table { min-width: 690px; font-size: 12px; }
+    .period-table-wrap th, .period-table-wrap td { padding: 8px 7px; }
+    .token-short { display: block; color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .token-cost { display: block; margin-top: 2px; color: var(--primary-strong); font-size: 10px; font-weight: 680; white-space: nowrap; }
+    .heat-content { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 14px; align-items: stretch; }
+    .heat-visual { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--panel-subtle); }
+    .heatmap-scroll { overflow-x: auto; padding: 4px 0 8px; }
+    .heatmap-layout { display: flex; gap: 8px; width: max-content; min-width: max-content; margin: 0 auto; }
+    .heat-weekdays, .heat-week { display: grid; grid-template-rows: repeat(7, 18px); gap: 4px; }
+    .heat-weekdays { color: var(--muted); font-size: 10px; text-align: right; }
+    .heat-weekdays span { height: 18px; line-height: 18px; }
+    .heat-weeks { display: flex; gap: 4px; }
+    .heat-week { width: 18px; }
+    .heat-month-spacer, .heat-months { height: 22px; }
+    .heat-months { display: flex; gap: 4px; color: var(--muted); font-size: 10px; line-height: 18px; overflow: hidden; }
+    .heat-month-segment { flex: 0 0 auto; white-space: nowrap; overflow: hidden; }
+    .heat-cell { width: 18px; height: 18px; border-radius: 4px; background: var(--heat-0); outline: 1px solid rgba(27,31,36,.04); }
+    .heat-cell.outside { visibility: hidden; }
+    .heat-cell.level-1 { background: var(--heat-1); }
+    .heat-cell.level-2 { background: var(--heat-2); }
+    .heat-cell.level-3 { background: var(--heat-3); }
+    .heat-cell.level-4 { background: var(--heat-4); }
+    .heat-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .heat-legend { display: flex; align-items: center; gap: 4px; }
+    .heat-legend i { width: 11px; height: 11px; border-radius: 2px; }
+    .heat-insights { display: grid; grid-template-rows: auto repeat(3, 1fr); gap: 9px; }
+    .heat-insights-title { padding: 2px 2px 4px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .heat-insight { display: flex; flex-direction: column; justify-content: center; min-height: 65px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 13px; background: linear-gradient(145deg, var(--panel-solid), var(--panel-subtle)); }
+    .heat-insight-label { color: var(--muted); font-size: 11px; }
+    .heat-insight-value { margin-top: 4px; font-size: 18px; font-weight: 700; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+    .heat-insight-note { margin-top: 1px; color: var(--muted); font-size: 10px; }
+    .tooltip { position: fixed; z-index: 9999; display: none; max-width: 320px; padding: 9px 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--text); color: var(--panel); box-shadow: 0 8px 24px rgba(16,24,40,.22); font-size: 12px; line-height: 1.55; white-space: pre-line; pointer-events: none; }
+    .tooltip.visible { display: block; }
+    .tooltip-title { margin-bottom: 4px; color: var(--panel); font-weight: 700; }
+    .tooltip-row { display: flex; justify-content: space-between; gap: 18px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .tooltip-row strong { font-weight: 700; }
+    .tooltip-cached { color: var(--cached); }
+    .tooltip-uncached { color: var(--uncached); }
+    .tooltip-output { color: var(--output); }
+    .tooltip-unknown { color: var(--unknown); }
+    .tooltip-total { color: var(--panel); }
+    [data-tooltip], [data-tooltip-html] { cursor: crosshair; }
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); margin: -4px 0 10px 13px; font-size: 12px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 10px; height: 10px; border-radius: 3px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .rank { display: grid; gap: 11px; }
+    .rank-row { display: grid; grid-template-columns: minmax(90px, 1fr) 2fr auto; gap: 10px; align-items: center; padding: 3px 4px; border-radius: 8px; transition: background .16s ease; }
+    .rank-row:hover { background: var(--primary-soft); }
+    .rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar { height: 7px; background: color-mix(in srgb, var(--border) 72%, transparent); border-radius: 999px; overflow: hidden; }
+    .bar > i { display: block; height: 100%; background: linear-gradient(90deg, var(--primary), #8d85ff); border-radius: inherit; box-shadow: 0 0 10px rgba(99,91,255,.18); }
+    .num { font-variant-numeric: tabular-nums; color: var(--muted); }
+    .table-wrap { overflow-x: auto; max-height: 520px; }
+    table { width: 100%; border-collapse: collapse; min-width: 820px; }
+    th, td { text-align: right; border-bottom: 1px solid var(--border); padding: 10px 9px; font-variant-numeric: tabular-nums; }
+    th { position: sticky; top: 0; z-index: 2; background: var(--panel-solid); color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .025em; }
+    tbody tr { transition: background .14s ease; }
+    tbody tr:hover { background: var(--primary-soft); }
+    th:first-child, td:first-child { text-align: left; }
+    tr:last-child td { border-bottom: 0; }
+    footer { margin-top: 18px; padding: 0 6px; color: var(--muted); font-size: 12px; }
+    @media (max-width: 1100px) { .heat-content, .grid { grid-template-columns: 1fr; } .heat-insights { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto 1fr; } .heat-insights-title { grid-column: 1/-1; } }
+    @media (max-width: 1000px) { .period-grid, .utility-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) { .cards { grid-template-columns: repeat(2, 1fr); } .grid { grid-template-columns: 1fr; } .quota-row { grid-template-columns: 1fr; } .quota-detail { text-align: left; } }
+    @media (max-width: 680px) { main { padding: 12px 12px 40px; } header { position: static; flex-direction: column; align-items: stretch; padding: 13px; } .actions { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; } .actions select, .actions button { width: 100%; } .actions button { white-space: nowrap; } .cards { grid-template-columns: 1fr; } .cost-total { grid-template-columns: 1fr; } .cost-facts { grid-template-columns: 1fr; } .pricing-summary-copy { display: none; } .section-head { display: block; } .section-note { margin: -8px 0 12px 13px; text-align: left; } .heat-insights { grid-template-columns: 1fr; grid-template-rows: auto; } .subtitle { white-space: normal; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div>
+        <div class="eyebrow">Local analytics</div>
+        <h1>Codex Token 用量</h1>
+        <div class="subtitle">仅统计本机结构化元数据，不采集或展示对话正文</div>
+      </div>
+    </div>
+    <div class="actions">
+      <span class="status"><i id="statusDot" class="dot"></i><span id="statusText">正在加载</span></span>
+      <select id="days">
+        <option value="7">最近 7 天</option>
+        <option value="30" selected>最近 30 天</option>
+        <option value="90">最近 90 天</option>
+        <option value="0">全部历史</option>
+      </select>
+      <button id="refresh">立即更新</button>
+    </div>
+  </header>
+
+  <section class="cards">
+    <div class="card"><div class="label">总 Token</div><div class="value" id="total">—</div><div class="small value-short" id="totalShort"></div><div class="metric-price" id="totalPrice">—</div><div class="small" id="totalSub"></div></div>
+    <div class="card"><div class="label">非缓存输入</div><div class="value" id="uncached">—</div><div class="small value-short" id="uncachedShort"></div><div class="metric-price" id="uncachedPrice">—</div><div class="small">真正未命中输入缓存的部分</div></div>
+    <div class="card"><div class="label">缓存输入</div><div class="value" id="cached">—</div><div class="small value-short" id="cachedShort"></div><div class="metric-price" id="cachedPrice">—</div><div class="small" id="cacheRate"></div></div>
+    <div class="card"><div class="label">输出 Token</div><div class="value" id="output">—</div><div class="small value-short" id="outputShort"></div><div class="metric-price" id="outputPrice">—</div><div class="small" id="reasoning"></div></div>
+  </section>
+
+  <section class="utility-grid">
+    <div class="panel">
+      <h2>CLI 周额度</h2>
+      <div class="quota-row">
+        <div><div class="label">7 天窗口已使用</div><div class="quota-value" id="quotaUsed">—</div></div>
+        <div><div class="quota-track"><div id="quotaFill" class="quota-fill"></div></div><div class="small" id="quotaRemaining"></div></div>
+        <div class="quota-detail" id="quotaReset"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>价格口径</h2>
+      <div class="cost-summary">
+        <div class="cost-total"><div class="cost-total-copy"><span class="label">已定价总额</span><span class="small" id="costCoverage"></span></div><strong id="costTotal">—</strong></div>
+        <div class="cost-facts">
+          <div class="cost-fact">Standard 回退<strong id="standardFallback">—</strong></div>
+          <div class="cost-fact">未定价 Token<strong id="unpricedTokens">—</strong></div>
+          <div class="cost-fact">计价属性<strong>API 等价成本</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <details class="panel pricing-details">
+    <summary><span>官方价目与计算边界</span><span class="pricing-summary-copy">未定价模型、Standard 回退与采用的每百万 Token 单价</span></summary>
+    <div class="pricing-body"><div id="unpricedNotice" class="small"></div><div class="table-wrap"><table><thead><tr><th>模型</th><th>层级</th><th>上下文</th><th>输入 / 1M</th><th>缓存输入 / 1M</th><th>输出 / 1M</th></tr></thead><tbody id="pricingRows"></tbody></table></div><div id="pricingNotes" class="hint"></div></div>
+  </details>
+
+  <section class="panel">
+    <div class="section-head"><h2>每日 Token 趋势</h2><div class="section-note">柱高 = Token · 悬浮查看 Token（美元等价成本）</div></div>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--cached)"></i>缓存输入</span>
+      <span><i class="swatch" style="background:var(--uncached)"></i>非缓存输入</span>
+      <span><i class="swatch" style="background:var(--output)"></i>输出</span>
+      <span><i class="swatch" style="background:var(--unknown)"></i>旧格式未拆分</span>
+    </div>
+    <div class="chart-wrap"><svg id="chart" role="img" aria-label="每日 token 趋势"></svg></div>
+  </section>
+
+  <section class="panel">
+    <h2>每日活跃热力图</h2>
+    <div class="hint">GitHub 风格图块；颜色越深，代表当天 Token 用量越高</div>
+    <div class="heat-content">
+      <div class="heat-visual">
+        <div id="heatmap" class="heatmap-scroll"></div>
+        <div class="heat-footer">
+          <span id="heatSummary"></span>
+          <span class="heat-legend">少 <i style="background:var(--heat-0)"></i><i style="background:var(--heat-1)"></i><i style="background:var(--heat-2)"></i><i style="background:var(--heat-3)"></i><i style="background:var(--heat-4)"></i> 多</span>
+        </div>
+      </div>
+      <div class="heat-insights">
+        <div class="heat-insights-title">本期概览</div>
+        <div class="heat-insight"><div class="heat-insight-label">活跃天数</div><div class="heat-insight-value" id="activeDays">—</div><div class="heat-insight-note" id="activeRate"></div></div>
+        <div class="heat-insight"><div class="heat-insight-label">日均用量</div><div class="heat-insight-value" id="dailyAverage">—</div><div class="heat-insight-note">按查询范围全部天数</div></div>
+        <div class="heat-insight"><div class="heat-insight-label">单日峰值</div><div class="heat-insight-value" id="peakUsage">—</div><div class="heat-insight-note" id="peakDate"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="period-grid">
+    <div class="panel">
+      <h2>每周用量</h2>
+      <div class="hint">按周一至周日聚合，边界周按当前查询范围展示</div>
+      <div class="period-chart-wrap"><svg id="weeklyChart" class="period-chart" role="img" aria-label="每周 token 趋势"></svg></div>
+      <div class="period-table-wrap">
+        <table><thead><tr><th>周</th><th>总 Token</th><th>输入</th><th>缓存</th><th>非缓存</th><th>输出</th></tr></thead><tbody id="weekly"></tbody></table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>每月用量</h2>
+      <div class="hint">按自然月聚合，边界月按当前查询范围展示</div>
+      <div class="period-chart-wrap"><svg id="monthlyChart" class="period-chart" role="img" aria-label="每月 token 趋势"></svg></div>
+      <div class="period-table-wrap">
+        <table><thead><tr><th>月</th><th>总 Token</th><th>输入</th><th>缓存</th><th>非缓存</th><th>输出</th></tr></thead><tbody id="monthly"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="panel"><div class="section-head"><h2>模型分布</h2><div class="section-note">Token 主排序 · 悬浮看对应价格</div></div><div id="models" class="rank"></div></div>
+    <div class="panel"><div class="section-head"><h2>项目分布</h2><div class="section-note">按工作目录归集</div></div><div id="projects" class="rank"></div></div>
+    <div class="panel"><div class="section-head"><h2>渠道分布</h2><div class="section-note">飞书按桥接 threadId 识别</div></div><div id="channels" class="rank"></div></div>
+  </section>
+
+  <section class="panel">
+    <h2>每日明细</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>日期</th><th>总 Token</th><th>输入</th><th>缓存输入</th><th>非缓存输入</th><th>输出</th><th>推理输出</th><th>会话</th></tr></thead>
+        <tbody id="daily"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer><div id="meta"></div><div class="hint">缓存输入包含在输入 Token 中；推理输出是输出明细，均不会重复计入总量。当天数字会随当前会话继续增长。</div></footer>
+</main>
+<div id="tooltip" class="tooltip" role="tooltip"></div>
+<script>
+  const $ = id => document.getElementById(id);
+  const nf = new Intl.NumberFormat('zh-CN');
+  const compact = new Intl.NumberFormat('zh-CN', { notation: 'compact', maximumFractionDigits: 2 });
+  let currentData = null;
+
+  function fmt(n) { return nf.format(n || 0); }
+  function short(n) { return compact.format(n || 0); }
+  function money(n, digits=6) { return `$${Number(n || 0).toFixed(digits)}`; }
+  function tokenCell(n) {
+    const exact = fmt(n), abbreviated = short(n);
+    return exact === abbreviated ? exact : `${exact}<span class="token-short">${abbreviated}</span>`;
+  }
+  function tokenCostCell(tokens, cost, priceLabel='') {
+    return `${tokenCell(tokens)}<span class="token-cost">（${priceLabel || money(cost)}）</span>`;
+  }
+  function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function tooltipHtmlAttr(s) { return escapeHtml(s); }
+  function tokenWithCost(tokens, cost, qualified=false) {
+    return `${fmt(tokens)}（${qualified ? '已定价 ' : ''}${money(cost, 8)}）`;
+  }
+  function usageTooltipHtml(label, row) {
+    return `<div class="tooltip-title">${escapeHtml(label)}</div>`
+      + `<div class="tooltip-row tooltip-total"><span>总 Token</span><strong>${tokenWithCost(row.total_tokens, row.priced_cost_usd, Number(row.unpriced_tokens || 0) > 0)}</strong></div>`
+      + `<div class="tooltip-row tooltip-cached"><span>缓存输入</span><strong>${tokenWithCost(row.cached_input_tokens, row.cached_input_cost_usd)}</strong></div>`
+      + `<div class="tooltip-row tooltip-uncached"><span>非缓存输入</span><strong>${tokenWithCost(row.uncached_input_tokens, row.input_cost_usd)}</strong></div>`
+      + `<div class="tooltip-row tooltip-output"><span>输出</span><strong>${tokenWithCost(row.output_tokens, row.output_cost_usd)}</strong></div>`
+      + (row.unattributed_tokens ? `<div class="tooltip-row tooltip-unknown"><span>旧格式未拆分</span><strong>${fmt(row.unattributed_tokens)}</strong></div>` : '')
+      + (row.standard_fallback_tokens ? `<div class="tooltip-row tooltip-unknown"><span>Standard 回退</span><strong>${fmt(row.standard_fallback_tokens)} Token</strong></div>` : '')
+      + (row.unpriced_tokens ? `<div class="tooltip-row tooltip-unknown"><span>未定价</span><strong>${fmt(row.unpriced_tokens)} Token</strong></div>` : '');
+  }
+  function setStatus(text, error=false) { $('statusText').textContent = text; $('statusDot').classList.toggle('error', error); }
+
+  async function loadUsage() {
+    const days = $('days').value;
+    try {
+      const response = await fetch(`/api/usage?days=${days}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      currentData = await response.json();
+      render(currentData);
+      setStatus(currentData.meta.refreshing ? '正在扫描历史日志' : '运行正常');
+    } catch (error) {
+      setStatus(`读取失败：${error.message}`, true);
+    }
+  }
+
+  async function refreshNow() {
+    const button = $('refresh');
+    button.disabled = true; button.textContent = '更新中…';
+    setStatus('正在扫描新日志');
+    try {
+      const response = await fetch('/api/refresh', { method: 'POST' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      await loadUsage();
+    } catch (error) {
+      setStatus(`更新失败：${error.message}`, true);
+    } finally {
+      button.disabled = false; button.textContent = '立即更新';
+    }
+  }
+
+  function render(data) {
+    const s = data.summary;
+    $('total').textContent = fmt(s.total_tokens);
+    $('totalShort').textContent = `约 ${short(s.total_tokens)} Token`;
+    $('totalPrice').textContent = `${s.unpriced_tokens ? '已定价 ' : ''}${money(s.priced_cost_usd)}`;
+    $('totalSub').textContent = `${fmt(s.sessions)} 个会话 · ${fmt(s.events)} 次用量事件`;
+    $('uncached').textContent = fmt(s.uncached_input_tokens);
+    $('uncachedShort').textContent = `约 ${short(s.uncached_input_tokens)} Token`;
+    $('uncachedPrice').textContent = money(s.input_cost_usd);
+    $('cached').textContent = fmt(s.cached_input_tokens);
+    $('cachedShort').textContent = `约 ${short(s.cached_input_tokens)} Token`;
+    $('cachedPrice').textContent = money(s.cached_input_cost_usd);
+    $('cacheRate').textContent = `输入缓存率 ${(s.cache_rate * 100).toFixed(1)}%`;
+    $('output').textContent = fmt(s.output_tokens);
+    $('outputShort').textContent = `约 ${short(s.output_tokens)} Token`;
+    $('outputPrice').textContent = money(s.output_cost_usd);
+    $('reasoning').textContent = `其中推理输出 ${fmt(s.reasoning_output_tokens)}（${short(s.reasoning_output_tokens)}）`;
+    renderQuota(data.weekly_rate_limit);
+    $('costTotal').textContent = money(s.priced_cost_usd);
+    $('standardFallback').textContent = `${short(s.standard_fallback_tokens)} Token`;
+    $('unpricedTokens').textContent = `${short(s.unpriced_tokens)} Token`;
+    const coverageBase = Number(s.priced_tokens || 0) + Number(s.unpriced_tokens || 0);
+    const coverage = coverageBase ? Number(s.priced_tokens || 0) / coverageBase * 100 : 0;
+    $('costCoverage').textContent = `覆盖 ${coverage.toFixed(1)}% 可归档 Token`;
+    $('unpricedNotice').textContent = s.unpriced_tokens
+      ? `未定价 ${fmt(s.unpriced_tokens)} Token（${short(s.unpriced_tokens)}），涉及：${(s.unpriced_models || []).join('、') || '旧格式未拆分'}。这些 Token 没有混入美元总额。`
+      : '当前范围内所有可归档 Token 均已匹配官方价档。';
+    if (s.standard_fallback_tokens) {
+      $('unpricedNotice').textContent += ` 另有 ${fmt(s.standard_fallback_tokens)} Token 因日志缺少 service tier，已按对应模型的官方 Standard 价计算。`;
+    }
+    renderChart(data.daily);
+    renderHeatmap(data.daily);
+    renderRank('models', data.models);
+    renderRank('projects', data.projects);
+    renderRank('channels', data.channels || []);
+    const weekly = aggregatePeriods(data.daily, 'week');
+    const monthly = aggregatePeriods(data.daily, 'month');
+    renderPeriodChart('weeklyChart', weekly);
+    renderPeriodChart('monthlyChart', monthly);
+    renderPeriodTable('weekly', weekly);
+    renderPeriodTable('monthly', monthly);
+    renderPricing(data.pricing);
+    renderTable(data.daily);
+    const m = data.meta;
+    const refreshed = m.last_refresh ? new Date(m.last_refresh).toLocaleString('zh-CN', { hour12: false }) : '尚未更新';
+    $('meta').textContent = `更新：${refreshed} · 扫描 ${fmt(m.files)} 个文件 / ${fmt(m.events)} 条事件 · 耗时 ${fmt(m.last_duration_ms)} ms · 时区 ${data.timezone}${m.parse_errors ? ` · 跳过 ${m.parse_errors} 条异常记录` : ''}`;
+  }
+
+  function renderQuota(quota) {
+    if (!quota?.available) {
+      $('quotaUsed').textContent = '不可用';
+      $('quotaFill').style.width = '0%';
+      $('quotaRemaining').textContent = quota?.reason || 'CLI 未提供精确的 7 天额度窗口';
+      $('quotaReset').textContent = '未使用 Token 量估算额度';
+      return;
+    }
+    $('quotaUsed').textContent = `${Number(quota.used_percent).toFixed(1)}%`;
+    $('quotaFill').style.width = `${quota.used_percent}%`;
+    $('quotaRemaining').textContent = `剩余 ${Number(quota.remaining_percent).toFixed(1)}% · ${quota.window_duration_mins / 1440} 天滚动窗口${quota.stale ? ' · 上次成功值' : ''}`;
+    const reset = quota.resets_at ? `重置：${new Date(quota.resets_at * 1000).toLocaleString('zh-CN', {hour12:false})}` : `额度桶：${quota.limit_id}`;
+    $('quotaReset').textContent = quota.stale ? `${reset} · 本次刷新失败：${quota.last_error}` : reset;
+  }
+
+  function renderChart(rows) {
+    const svg = $('chart');
+    const visible = rows.filter((r, i) => r.total_tokens > 0 || i >= rows.length - 14);
+    const width = Math.max(720, visible.length * 25 + 70), height = 300;
+    const pad = { l: 58, r: 14, t: 12, b: 42 }, innerH = height - pad.t - pad.b;
+    const max = Math.max(1, ...visible.map(r => r.total_tokens));
+    const gap = 5, barW = Math.max(5, (width - pad.l - pad.r) / Math.max(visible.length, 1) - gap);
+    const color = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const parts = [
+      ['cached_input_tokens', color('--cached')],
+      ['uncached_input_tokens', color('--uncached')],
+      ['output_tokens', color('--output')],
+      ['unattributed_tokens', color('--unknown')],
+    ];
+    let out = `<rect width="${width}" height="${height}" fill="transparent"/>`;
+    for (let i=0;i<=4;i++) {
+      const y = pad.t + innerH * i / 4, value = max * (1 - i/4);
+      out += `<line x1="${pad.l}" y1="${y}" x2="${width-pad.r}" y2="${y}" stroke="${color('--border')}"/>`;
+      out += `<text x="${pad.l-8}" y="${y+4}" text-anchor="end" fill="${color('--muted')}" font-size="11">${short(value)}</text>`;
+    }
+    visible.forEach((row, index) => {
+      const x = pad.l + index * ((width-pad.l-pad.r)/visible.length) + gap/2;
+      let y = pad.t + innerH, bars = '';
+      parts.forEach(([key, fill]) => {
+        const h = innerH * (row[key] || 0) / max;
+        y -= h;
+        if (h > .2) bars += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${fill}" rx="2"/>`;
+      });
+      out += `<g data-tooltip-html="${tooltipHtmlAttr(usageTooltipHtml(row.date, row))}"><rect x="${x}" y="${pad.t}" width="${barW}" height="${innerH}" fill="transparent" pointer-events="all"/>${bars}</g>`;
+      const labelStep = Math.max(1, Math.ceil(visible.length / 12));
+      const isLast = index === visible.length - 1;
+      const showLabel = isLast || (index % labelStep === 0 && visible.length - 1 - index > 1);
+      if (showLabel) out += `<text x="${x+barW/2}" y="${height-17}" text-anchor="middle" fill="${color('--muted')}" font-size="10">${row.date.slice(5)}</text>`;
+    });
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`); svg.innerHTML = out;
+  }
+
+  const metricFields = ['input_tokens', 'cached_input_tokens', 'uncached_input_tokens', 'output_tokens', 'reasoning_output_tokens', 'total_tokens', 'unattributed_tokens', 'events', 'priced_cost_usd', 'input_cost_usd', 'cached_input_cost_usd', 'output_cost_usd', 'priced_tokens', 'unpriced_tokens', 'unpriced_events', 'standard_fallback_tokens', 'standard_fallback_events'];
+
+  function parseDate(value) { return new Date(`${value}T00:00:00`); }
+  function isoDate(value) {
+    const y = value.getFullYear(), m = String(value.getMonth()+1).padStart(2, '0'), d = String(value.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  function addDays(value, amount) { const copy = new Date(value); copy.setDate(copy.getDate() + amount); return copy; }
+  function mondayOf(value) { return addDays(value, -((value.getDay() + 6) % 7)); }
+
+  function aggregatePeriods(rows, kind) {
+    const buckets = new Map();
+    rows.forEach(row => {
+      const day = parseDate(row.date);
+      const key = kind === 'week' ? isoDate(mondayOf(day)) : row.date.slice(0, 7);
+      if (!buckets.has(key)) {
+        const empty = { key, first_date: row.date, last_date: row.date };
+        metricFields.forEach(field => empty[field] = 0);
+        buckets.set(key, empty);
+      }
+      const bucket = buckets.get(key);
+      bucket.last_date = row.date;
+      metricFields.forEach(field => bucket[field] += Number(row[field] || 0));
+    });
+    return [...buckets.values()].map(bucket => ({
+      ...bucket,
+      label: kind === 'week' ? `${bucket.first_date.slice(5)}～${bucket.last_date.slice(5)}` : bucket.key,
+    }));
+  }
+
+  function renderHeatmap(rows) {
+    if (!rows.length) { $('heatmap').innerHTML = '<div class="hint">暂无数据</div>'; return; }
+    const values = rows.map(row => row.total_tokens || 0).filter(Boolean).sort((a, b) => a - b);
+    const quantile = p => values.length ? values[Math.floor((values.length - 1) * p)] : 0;
+    const thresholds = [quantile(.33), quantile(.66), quantile(.9)];
+    const level = value => {
+      if (!value) return 0;
+      if (value >= thresholds[2]) return 4;
+      if (value >= thresholds[1]) return 3;
+      if (value >= thresholds[0]) return 2;
+      return 1;
+    };
+    const byDate = new Map(rows.map(row => [row.date, row]));
+    const rangeStart = parseDate(rows[0].date), rangeEnd = parseDate(rows[rows.length - 1].date);
+    const gridStart = mondayOf(rangeStart), gridEnd = addDays(mondayOf(rangeEnd), 6);
+    let weeks = '';
+    const monthGroups = [];
+    for (let weekStart = gridStart; weekStart <= gridEnd; weekStart = addDays(weekStart, 7)) {
+      const dates = Array.from({length: 7}, (_, index) => addDays(weekStart, index));
+      const representative = dates.find(day => day >= rangeStart && day <= rangeEnd) || dates[3];
+      const monthKey = `${representative.getFullYear()}-${String(representative.getMonth()+1).padStart(2, '0')}`;
+      const lastGroup = monthGroups[monthGroups.length - 1];
+      if (lastGroup?.key === monthKey) lastGroup.weeks += 1;
+      else monthGroups.push({ key: monthKey, weeks: 1 });
+      const cells = dates.map(day => {
+        const key = isoDate(day), row = byDate.get(key), outside = day < rangeStart || day > rangeEnd;
+        const value = row?.total_tokens || 0;
+        const tip = outside ? '' : usageTooltipHtml(key, row || {});
+        return `<span class="heat-cell level-${level(value)}${outside ? ' outside' : ''}"${outside ? '' : ` data-tooltip-html="${tooltipHtmlAttr(tip)}"`}></span>`;
+      }).join('');
+      weeks += `<div class="heat-week">${cells}</div>`;
+    }
+    const monthLabels = monthGroups.map(group => {
+      const label = `${Number(group.key.slice(5))}月`;
+      return `<span class="heat-month-segment" style="width:${group.weeks * 22 - 4}px" title="${group.key}">${label}</span>`;
+    }).join('');
+    $('heatmap').innerHTML = `<div class="heatmap-layout"><div><div class="heat-month-spacer"></div><div class="heat-weekdays"><span>一</span><span></span><span>三</span><span></span><span>五</span><span></span><span>日</span></div></div><div><div class="heat-months">${monthLabels}</div><div class="heat-weeks">${weeks}</div></div></div>`;
+    const active = rows.filter(row => row.total_tokens > 0);
+    const busiest = active.reduce((best, row) => !best || row.total_tokens > best.total_tokens ? row : best, null);
+    $('heatSummary').textContent = busiest ? `${active.length}/${rows.length} 个活跃日 · 峰值 ${busiest.date}：${short(busiest.total_tokens)}` : `${rows.length} 天内暂无用量`;
+    const total = rows.reduce((sum, row) => sum + Number(row.total_tokens || 0), 0);
+    $('activeDays').textContent = `${active.length} 天`;
+    $('activeRate').textContent = `活跃率 ${rows.length ? (active.length / rows.length * 100).toFixed(0) : 0}%`;
+    $('dailyAverage').textContent = short(rows.length ? total / rows.length : 0);
+    $('peakUsage').textContent = short(busiest?.total_tokens || 0);
+    $('peakDate').textContent = busiest?.date || '暂无数据';
+  }
+
+  function renderPeriodChart(id, rows) {
+    const svg = $(id), width = Math.max(520, rows.length * 54 + 64), height = 240;
+    const pad = { l: 56, r: 12, t: 16, b: 43 }, innerH = height - pad.t - pad.b, innerW = width - pad.l - pad.r;
+    const max = Math.max(1, ...rows.map(row => row.total_tokens));
+    const color = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const parts = [['cached_input_tokens', color('--cached')], ['uncached_input_tokens', color('--uncached')], ['output_tokens', color('--output')], ['unattributed_tokens', color('--unknown')]];
+    let out = `<rect width="${width}" height="${height}" fill="transparent"/>`;
+    for (let i=0; i<=4; i++) {
+      const y = pad.t + innerH * i / 4, value = max * (1 - i/4);
+      out += `<line x1="${pad.l}" y1="${y}" x2="${width-pad.r}" y2="${y}" stroke="${color('--border')}"/>`;
+      out += `<text x="${pad.l-7}" y="${y+4}" text-anchor="end" fill="${color('--muted')}" font-size="10">${short(value)}</text>`;
+    }
+    const slot = innerW / Math.max(rows.length, 1), barW = Math.min(36, Math.max(8, slot - 10));
+    const labelStep = Math.max(1, Math.ceil(rows.length / 8));
+    rows.forEach((row, index) => {
+      const x = pad.l + index * slot + (slot - barW) / 2;
+      let y = pad.t + innerH, bars = '';
+      parts.forEach(([key, fill]) => {
+        const h = innerH * (row[key] || 0) / max;
+        y -= h;
+        if (h > .2) bars += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${fill}" rx="2"/>`;
+      });
+      out += `<g data-tooltip-html="${tooltipHtmlAttr(usageTooltipHtml(row.label, row))}"><rect x="${x}" y="${pad.t}" width="${barW}" height="${innerH}" fill="transparent" pointer-events="all"/>${bars}</g>`;
+      const isLast = index === rows.length - 1;
+      if (isLast || (index % labelStep === 0 && rows.length - 1 - index > 0)) out += `<text x="${x+barW/2}" y="${height-17}" text-anchor="middle" fill="${color('--muted')}" font-size="10">${row.label}</text>`;
+    });
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`); svg.innerHTML = out;
+  }
+
+  function renderPeriodTable(id, rows) {
+    $(id).innerHTML = [...rows].reverse().map(row => `<tr><td>${row.label}</td><td>${tokenCostCell(row.total_tokens, row.priced_cost_usd, row.unpriced_tokens ? `已定价 ${money(row.priced_cost_usd)}` : '')}</td><td>${tokenCostCell(row.input_tokens, Number(row.input_cost_usd || 0) + Number(row.cached_input_cost_usd || 0))}</td><td>${tokenCostCell(row.cached_input_tokens, row.cached_input_cost_usd)}</td><td>${tokenCostCell(row.uncached_input_tokens, row.input_cost_usd)}</td><td>${tokenCostCell(row.output_tokens, row.output_cost_usd)}</td></tr>`).join('');
+  }
+
+  function renderPricing(pricing) {
+    $('pricingRows').innerHTML = (pricing?.models || []).map(row => `<tr><td>${escapeHtml(row.model)}</td><td>${escapeHtml(row.tier)}</td><td>${row.context === 'long' ? `长（>${fmt(pricing.long_context_threshold)}）` : '短'}</td><td>${money(row.input, 3)}</td><td>${money(row.cached_input, 3)}</td><td>${money(row.output, 3)}</td></tr>`).join('');
+    const notes = (pricing?.notes || []).join('；');
+    $('pricingNotes').innerHTML = `${escapeHtml(notes)} <a href="${escapeHtml(pricing?.source || '#')}" target="_blank" rel="noreferrer">官方价格来源</a>（核对日期 ${escapeHtml(pricing?.as_of || '')}）。`;
+  }
+
+  function renderRank(id, rows) {
+    const max = Math.max(1, ...rows.map(r => r.total_tokens));
+    $(id).innerHTML = rows.length ? rows.map(row => `<div class="rank-row" data-tooltip-html="${tooltipHtmlAttr(usageTooltipHtml(row.name, row))}"><div class="rank-name">${escapeHtml(row.name)}</div><div class="bar"><i style="width:${row.total_tokens/max*100}%"></i></div><div class="num">${short(row.total_tokens)}</div></div>`).join('') : '<div class="hint">暂无数据</div>';
+  }
+
+  function renderTable(rows) {
+    $('daily').innerHTML = [...rows].reverse().map(r => `<tr><td>${r.date}</td><td>${tokenCostCell(r.total_tokens, r.priced_cost_usd, r.unpriced_tokens ? `已定价 ${money(r.priced_cost_usd)}` : '')}</td><td>${tokenCostCell(r.input_tokens, Number(r.input_cost_usd || 0) + Number(r.cached_input_cost_usd || 0))}</td><td>${tokenCostCell(r.cached_input_tokens, r.cached_input_cost_usd)}</td><td>${tokenCostCell(r.uncached_input_tokens, r.input_cost_usd)}</td><td>${tokenCostCell(r.output_tokens, r.output_cost_usd)}</td><td>${tokenCostCell(r.reasoning_output_tokens, 0, '已包含在输出价格')}</td><td>${fmt(r.sessions)}</td></tr>`).join('');
+  }
+
+  $('days').addEventListener('change', loadUsage);
+  $('refresh').addEventListener('click', refreshNow);
+  const tooltip = $('tooltip');
+  let tooltipTarget = null;
+  function positionTooltip(event) {
+    if (!tooltipTarget) return;
+    const gap = 14, bounds = tooltip.getBoundingClientRect();
+    let left = event.clientX + gap, top = event.clientY + gap;
+    if (left + bounds.width > window.innerWidth - 8) left = event.clientX - bounds.width - gap;
+    if (top + bounds.height > window.innerHeight - 8) top = event.clientY - bounds.height - gap;
+    tooltip.style.left = `${Math.max(8, left)}px`;
+    tooltip.style.top = `${Math.max(8, top)}px`;
+  }
+  document.addEventListener('pointerover', event => {
+    const target = event.target.closest?.('[data-tooltip], [data-tooltip-html]');
+    if (!target) return;
+    tooltipTarget = target;
+    if (target.dataset.tooltipHtml) tooltip.innerHTML = target.dataset.tooltipHtml;
+    else tooltip.textContent = target.dataset.tooltip;
+    tooltip.classList.add('visible');
+    positionTooltip(event);
+  });
+  document.addEventListener('pointermove', positionTooltip);
+  document.addEventListener('pointerout', event => {
+    if (!tooltipTarget || event.relatedTarget?.closest?.('[data-tooltip], [data-tooltip-html]') === tooltipTarget) return;
+    if (event.target.closest?.('[data-tooltip], [data-tooltip-html]') === tooltipTarget) {
+      tooltipTarget = null;
+      tooltip.classList.remove('visible');
+    }
+  });
+  loadUsage();
+  setInterval(loadUsage, 60000);
+</script>
+</body>
+</html>

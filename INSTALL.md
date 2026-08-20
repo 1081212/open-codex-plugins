@@ -1,8 +1,59 @@
 # Agent Installation Protocol
 
-This document is written for a Codex agent asked to install the Lark Codex integration from this repository.
+This document is written for a Codex agent asked to install a plugin from this
+repository. Select the requested plugin below; do not install unrelated plugins.
 
-## Outcome
+## Codex Usage Dashboard
+
+### Outcome
+
+Install a per-user dashboard at `http://127.0.0.1:47831/`, verify its health,
+and enable daily automatic updates only when the user explicitly requests them.
+
+### Procedure
+
+1. If only the GitHub URL was supplied, inspect or clone the public repository
+   into a temporary working directory. Do not place it inside an unrelated user
+   repository.
+2. Confirm that `codex` is installed and signed in and that Python is at least
+   3.9.
+3. Add the Marketplace and plugin if necessary:
+
+   ```bash
+   codex plugin marketplace add 1081212/open-codex-plugins --ref main
+   codex plugin add codex-usage-dashboard@open-codex-plugins
+   ```
+
+4. Explain that the dashboard extracts structured token counters and
+   project/model metadata from local Codex sessions, does not collect, store, or
+   expose conversation content, and listens only on loopback.
+5. Automatic updates execute future code from this repository. If the user
+   explicitly requested or approved them, enable them; otherwise leave them
+   disabled.
+6. Run the platform installer from the plugin directory.
+
+   macOS or Linux with automatic updates:
+
+   ```bash
+   bash skills/codex-usage-dashboard/scripts/install.sh --enable-auto-update
+   ```
+
+   Windows PowerShell with automatic updates:
+
+   ```powershell
+   ./skills/codex-usage-dashboard/scripts/install.ps1 -EnableAutoUpdate
+   ```
+
+   Omit the automatic-update flag when it was not approved. Never use `sudo` or
+   an Administrator shell for this per-user install.
+7. Verify `http://127.0.0.1:47831/healthz` and report the dashboard URL, runtime
+   version, and automatic-update state.
+8. Start a new Codex thread after plugin installation so its Skill instructions
+   are loaded.
+
+## Lark Codex
+
+### Outcome
 
 Complete both routes:
 
@@ -13,7 +64,7 @@ local Codex -> @larksuite/cli -> Lark or Feishu documents
 
 The account owner must scan QR codes, approve OAuth scopes, and approve restricted system changes. Do not bypass, simulate, or transfer those approvals.
 
-## Procedure
+### Procedure
 
 1. If only the GitHub URL was supplied, inspect or clone the public repository into a temporary working directory so these instructions and bundled scripts are available. Do not place it inside an unrelated user repository.
 2. Confirm that `codex` is installed and signed in and that Node.js is at least 20.12. If Node.js is missing or too old, identify the user's existing version manager or operating-system package manager, explain the proposed change, obtain approval, install a supported Node.js version, and rerun the check. Do not silently replace an existing Node installation or version manager.
