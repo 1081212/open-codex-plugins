@@ -8,7 +8,7 @@ cli_config_dir="${bridge_root}/profiles/${profile_name}/lark-cli"
 
 if [[ ! -f "${source_config}" ]]; then
   printf 'Lark profile is not configured: %s\n' "${profile_name}" >&2
-  printf 'Initialize it with: lark-channel-bridge run --profile %s --agent codex\n' "${profile_name}" >&2
+  printf 'Initialize it with: lark-channel-bridge start --profile %s --agent codex\n' "${profile_name}" >&2
   exit 2
 fi
 

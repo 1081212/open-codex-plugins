@@ -5,15 +5,15 @@ description: Read, search, create, and edit Lark or Feishu cloud documents throu
 
 # Lark Documents
 
-Use the bundled wrapper so every command uses a profile-local configuration and never a maintainer's credentials. In the commands below, resolve `<skill-dir>` to the installed directory that contains this `SKILL.md` file.
+Use the bundled wrapper so every command uses a profile-local configuration and never a maintainer's credentials. In the commands below, resolve `<skill-dir>` to the installed directory that contains this `SKILL.md` file. Use the `.sh` scripts on macOS or Linux and the matching `.ps1` scripts on Windows.
 
 ## Setup and identity
 
-1. Run `bash <skill-dir>/scripts/doctor.sh` before the first document operation on a machine.
+1. Run the platform-appropriate `doctor` script before the first document operation on a machine.
 2. If a dependency is missing, explain what is missing and ask before installing global packages or changing local configuration.
-3. Initialize a local profile only with the user's approval. The supported bootstrap is `lark-channel-bridge run --profile codex --agent codex`; the user must scan the QR code and select or create their own PersonalAgent application.
+3. Initialize a local profile only with the user's approval. The supported bootstrap is `lark-channel-bridge start --profile codex --agent codex`; the user must scan the QR code and select or create their own PersonalAgent application.
 4. Never copy, print, commit, or transfer app secrets, OAuth tokens, encrypted profiles, or another user's `~/.lark-channel` directory.
-5. Verify the effective identity with `scripts/lark-cli-profile whoami`. Personal documents require a user identity. If authorization is incomplete, let the CLI present its normal authorization flow to the current user.
+5. Verify the effective identity with the platform-appropriate `lark-cli-profile` wrapper and `whoami`. Personal documents require a user identity. If authorization is incomplete, let the CLI present its normal authorization flow to the current user.
 
 ## Document workflow
 
@@ -22,6 +22,8 @@ Before choosing document flags, read the version-matched guide:
 ```bash
 bash <skill-dir>/scripts/lark-cli-profile skills read lark-doc
 ```
+
+On Windows, call `lark-cli-profile.ps1` with the same arguments.
 
 Follow every additional reference that guide marks as required for the intended operation.
 
@@ -40,7 +42,7 @@ bash <skill-dir>/scripts/lark-cli-profile docs +fetch --as user --doc '<document
 
 ## Failure handling
 
-- On authentication errors, run `bash <skill-dir>/scripts/lark-cli-profile auth status --json --verify` and report the missing identity or scope without exposing secrets.
+- On authentication errors, run the platform-appropriate `lark-cli-profile` wrapper with `auth status --json --verify` and report the missing identity or scope without exposing secrets.
 - If the profile is absent, stop the document operation and offer the bootstrap command from the setup section.
 - Do not fall back to browser automation or web scraping for private documents.
 - Do not claim a remote write succeeded until the changed content has been fetched and verified.

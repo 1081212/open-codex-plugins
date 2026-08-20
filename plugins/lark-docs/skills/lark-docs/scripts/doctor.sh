@@ -18,14 +18,25 @@ check_command() {
 }
 
 check_command codex 'Codex CLI'
+check_command node 'Node.js 20.12 or newer'
+check_command npm 'npm'
 check_command lark-channel-bridge 'lark-channel-bridge'
 check_command lark-cli '@larksuite/cli'
+
+if command -v node >/dev/null 2>&1; then
+  if node -e 'const [a,b]=process.versions.node.split(".").map(Number); process.exit(a>20||(a===20&&b>=12)?0:1)'; then
+    printf 'ok      %-21s %s\n' 'node-version' "$(node --version)"
+  else
+    printf 'invalid %-21s %s; require 20.12 or newer\n' 'node-version' "$(node --version)"
+    failed=1
+  fi
+fi
 
 if [[ -f "${source_config}" ]]; then
   printf 'ok      %-21s %s\n' 'profile' "${profile_name}"
 else
   printf 'missing %-21s %s\n' 'profile' "${profile_name}"
-  printf '        initialize with: lark-channel-bridge run --profile %s --agent codex\n' "${profile_name}"
+  printf '        initialize with: lark-channel-bridge start --profile %s --agent codex\n' "${profile_name}"
   failed=1
 fi
 

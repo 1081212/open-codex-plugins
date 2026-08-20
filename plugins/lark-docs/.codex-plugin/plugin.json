@@ -1,7 +1,7 @@
 {
   "name": "lark-docs",
-  "version": "0.1.0",
-  "description": "Connect Codex to Lark and Feishu documents through the user's local authorization.",
+  "version": "0.2.0",
+  "description": "Set up bidirectional Codex access from Lark or Feishu and work with the user's cloud documents.",
   "author": {
     "name": "Open Codex Plugins contributors"
   },
@@ -11,16 +11,16 @@
   "keywords": ["codex", "lark", "feishu", "documents"],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Lark Docs",
-    "shortDescription": "Work with your Lark or Feishu documents from Codex.",
-    "longDescription": "Read, search, create, and edit Lark or Feishu documents through a local profile authorized by the current user.",
+    "displayName": "Lark Codex",
+    "shortDescription": "Connect Lark or Feishu with Codex in both directions.",
+    "longDescription": "Set up a local Lark or Feishu bridge to Codex, then read, search, create, and edit cloud documents with the current user's authorization.",
     "developerName": "Open Codex Plugins contributors",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
     "websiteURL": "https://github.com/1081212/open-codex-plugins/tree/main/plugins/lark-docs",
     "defaultPrompt": [
+      "Install and configure my Lark Codex connection.",
       "Summarize this Lark document.",
-      "Create a Lark document from these notes.",
       "Update this Feishu document with my changes."
     ]
   }
